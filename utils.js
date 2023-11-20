@@ -31,6 +31,10 @@ export function createBoard(rows, columns, cardSet) {
       boardElement.appendChild(card.element);
     }
   }
+
+  animateCardsIntoPosition(boardElement);
+  // animateCardsToInitialPosition(boardElement);
+
   return boardElement;
 }
 
@@ -47,3 +51,80 @@ export function shuffleCards(cardList) {
 
   return cardSet;
 }
+
+export function animateCardsIntoPosition(boardElement) {
+  const finalPositions = calculateInitialPositions(4, 5);
+
+  gsap.set(boardElement, { perspective: 800 });
+  gsap.set(boardElement.children, { transformStyle: 'preserve-3d' });
+
+  gsap.from(boardElement.children, {
+    duration: 1,
+    opacity: 0,
+    // rotationY: 720,
+    stagger: 0.1,
+    onComplete: () => {
+      gsap.to(boardElement.children, {
+        duration: 0.5,
+        x: index => finalPositions[index].x,
+        y: index => finalPositions[index].y,
+        rotationY: 0,
+        opacity: 1,
+        stagger: 0.1,
+      });
+    },
+  });
+}
+export function calculateInitialPositions(rows, columns) {
+  const initialPositions = [];
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      const offsetX = (columns / 2 - c) * parseInt(Card.WIDTH); // Tính vị trí ban đầu
+      const offsetY = (rows / 2 - r) * parseInt(Card.HEIGHT); // Tính vị trí ban đầu
+
+      initialPositions.push({ x: offsetX, y: offsetY });
+    }
+  }
+
+  return initialPositions;
+}
+
+// export function animateCardsToInitialPosition(boardElement) {
+//   const initialPositions = calculateInitialPositions(4, 5);
+
+//   gsap.set(boardElement, { perspective: 800 });
+//   gsap.set(boardElement.children, { transformStyle: 'preserve-3d' });
+
+//   gsap.from(boardElement.children, {
+//     duration: 1,
+//     opacity: 0,
+//     rotationY: 720,
+//     stagger: 0.1,
+//     onComplete: () => {
+//       gsap.to(boardElement.children, {
+//         duration: 0.5,
+//         x: 0, // Di chuyển về vị trí ban đầu (x: 0)
+//         y: 0, // Di chuyển về vị trí ban đầu (y: 0)
+//         rotationY: 0,
+//         opacity: 1,
+//         stagger: 0.1,
+//       });
+//     },
+//   });
+// }
+
+// export function calculateInitialPositions(rows, columns) {
+//   const initialPositions = [];
+
+//   for (let r = 0; r < rows; r++) {
+//     for (let c = 0; c < columns; c++) {
+//       const offsetX = (columns / 2 - c) * parseInt(Card.WIDTH); // Tính vị trí ban đầu
+//       const offsetY = (rows / 2 - r) * parseInt(Card.HEIGHT); // Tính vị trí ban đầu
+
+//       initialPositions.push({ x: 0, y: 0 }); // Sử dụng vị trí ban đầu là (0, 0) cho tất cả các thẻ
+//     }
+//   }
+
+//   return initialPositions;
+// }
