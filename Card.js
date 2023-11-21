@@ -20,7 +20,7 @@ export class Card extends Node {
 
     this._sprite.element.style.height = Card.HEIGHT;
     this._sprite.element.style.width = Card.WIDTH;
-    this._sprite.element.id = `card-${id}`;
+    // this._sprite.element.id = `card-${id}`;
   }
 
   get active() {
