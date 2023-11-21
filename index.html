@@ -4,19 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Memory Game</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"
+      defer
+    ></script>
   </head>
   <style>
     body {
       background-image: url(./assets/pkm.jpeg);
     }
+
     .container {
-      height: 100vh;
+      height: 600px;
+      width: 50%;
       width: auto;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      /* transform: translateX(-50%); */
     }
     .display {
       position: absolute;
@@ -27,12 +33,12 @@
     }
   </style>
   <body>
-    <!-- <div id="coin">Initial Coin Value</div> -->
     <div class="display"></div>
     <div class="container"></div>
 
     <script type="module" src="./engine/Node.js"></script>
     <script type="module" src="./engine/Sprite.js"></script>
+    <script type="module" src="./animation.js"></script>
     <script type="module" src="./Card.js"></script>
     <script type="module" src="./Board.js"></script>
 

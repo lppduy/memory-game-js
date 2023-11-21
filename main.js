@@ -16,6 +16,8 @@ const cardList = [
 const coin = 10_000;
 const cardSet = shuffleCards(cardList);
 const boardElement = createBoard(4, 5, cardSet);
+// createBoard(4, 5, cardSet);
+
 const coinEl = new Label(`Coins: ${formatCoin(coin)}`);
 const containerElm = document.querySelector('.container');
 const displayElm = document.querySelector('.display');
