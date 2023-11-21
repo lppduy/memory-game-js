@@ -88,12 +88,12 @@ export function revealCard(card) {
 
   gsap.to(card, {
     scaleX: 0,
-    duration: 0.2,
+    duration: 0.3,
     onComplete: () => {
       imgElement.src = getSrc(cardSet[r * COLUMNS + c]);
     },
   });
-  gsap.to(card, { scaleX: 1, duration: 0.2, delay: 0.2 });
+  gsap.to(card, { scaleX: 1, duration: 0.3, delay: 0.3 });
 }
 
 export function checkWin() {
