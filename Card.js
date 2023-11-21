@@ -8,15 +8,19 @@ export class Card extends Node {
   constructor(id, imageSrc) {
     super();
     this.id = id;
-    this._sprite = new Sprite(imageSrc);
+    this.imageSrc = imageSrc;
+
+    this._sprite = new Sprite('back');
     this.addChild(this._sprite);
-    this._cover = new Node();
-    this.addChild(this._cover);
+
+    // this._cover = new Sprite('back');
+    // this.addChild(this._cover);
+
     this._active = true;
 
     this._sprite.element.style.height = Card.HEIGHT;
     this._sprite.element.style.width = Card.WIDTH;
-    this._sprite.element.id = `card-${id}`;
+    // this._sprite.element.id = `card-${id}`;
   }
 
   get active() {
