@@ -1,6 +1,8 @@
 import { Card } from './Card.js';
 // import { animateCardsIntoPosition } from './animation.js';
 
+let currentBoardElement;
+
 export function formatCoin(num) {
   return Number(num).toLocaleString('en');
 }
@@ -41,14 +43,21 @@ export function createBoard(rows, columns, cardSet) {
         opacity: 1,
         x: offsetX,
         y: offsetY,
-        delay: 0.15 * index,
+        delay: 0.1 * index,
         onStart: () => {
           card.element.style.zIndex = 'auto';
         },
       });
     }
   }
+  currentBoardElement = boardElement;
   return { boardElement, cards };
+}
+
+export function removeBoardElement() {
+  if (currentBoardElement && currentBoardElement.parentNode) {
+    currentBoardElement.parentNode.removeChild(currentBoardElement);
+  }
 }
 
 export function shuffleCards(cardList) {

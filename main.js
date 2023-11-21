@@ -1,5 +1,10 @@
 import { Label } from './engine/Label.js';
-import { createBoard, formatCoin, shuffleCards } from './utils.js';
+import {
+  createBoard,
+  formatCoin,
+  shuffleCards,
+  removeBoardElement,
+} from './utils.js';
 const cardList = [
   'darkness',
   'double',
@@ -14,106 +19,85 @@ const cardList = [
 ];
 
 let coin = 10_000;
+// let coin = 0;
 let matchPairs = 0;
 const ROWS = 4;
 const COLUMNS = 5;
 let cardOneSelected;
 let cardTwoSelected;
 
-const cardSet = shuffleCards(cardList);
-console.log(cardSet);
-const { boardElement, cards } = createBoard(ROWS, COLUMNS, cardSet);
-// createBoard(4, 5, cardSet);
-// console.log(boardElement.children);
-console.log(cards);
+const backgroundAudio = new Audio('./assets/bg-music.mp3');
+const matchSound = new Audio('./assets/match.mp3');
+const selectAudio = new Audio('./assets/select.mp3');
 
-cards.forEach(card => card.element.addEventListener('click', handleSelectCard));
+// const cardSet = shuffleCards(cardList);
+const cardSet = [...cardList, ...cardList];
+console.log(cardSet);
 
 const coinEl = new Label(`Coins: ${formatCoin(coin)}`);
 const containerElm = document.querySelector('.container');
 const displayElm = document.querySelector('.display');
 
-containerElm.appendChild(boardElement);
+const buttonPlay = document.createElement('div');
+buttonPlay.textContent = 'Start Game';
+buttonPlay.style.position = 'relative';
+buttonPlay.style.fontSize = '50px';
+buttonPlay.style.padding = '20px';
+buttonPlay.style.top = '200px';
+buttonPlay.style.left = '40px';
+buttonPlay.style.cursor = 'pointer';
+buttonPlay.style.backgroundColor = 'black';
+buttonPlay.style.borderRadius = '10px';
+buttonPlay.style.color = 'white';
+buttonPlay.style.fontFamily = 'Montserrat, sans-serif';
+
+containerElm.appendChild(buttonPlay);
+
 displayElm.append(coinEl.element);
 
-// //////////
-// export function handleSelectCard() {
-//   const imgElement = this.children[0];
-//   if (imgElement.src.includes('back')) {
-//     if (!cardOneSelected) {
-//       cardOneSelected = this;
-//       gsap.to(cardOneSelected, {
-//         scale: 0,
-//         duration: 0.5,
-//         onComplete: () => {
-//           revealCard(cardOneSelected);
-//         },
-//       });
-//     } else if (!cardTwoSelected && this !== cardOneSelected) {
-//       cardTwoSelected = this;
-//       gsap.to(cardTwoSelected, {
-//         scale: 0,
-//         duration: 0.5,
-//         onComplete: () => {
-//           revealCard(cardTwoSelected);
-//           setTimeout(checkWin, 1000);
-//         },
-//       });
-//     }
+function startGame() {
+  matchSound.play();
+  backgroundAudio.play();
+  // buttonPlay.removeEventListener('click', startGame);
+  buttonPlay.style.display = 'none';
+  const { boardElement, cards } = createBoard(ROWS, COLUMNS, cardSet);
 
-//     gsap.to(cardOneSelected, {
-//       rotationY: 180,
-//       duration: 0.5,
-//       scale: 1,
-//       ease: 'power2.out',
-//       onComplete: () => {
-//         if (cardTwoSelected) {
-//           revealCard(cardTwoSelected);
-//           setTimeout(checkWin, 800);
-//         }
-//       },
-//     });
+  cards.forEach(card =>
+    card.element.addEventListener('click', handleSelectCard)
+  );
+  containerElm.appendChild(boardElement);
+}
 
-//     gsap.to(cardTwoSelected, {
-//       rotationY: 180,
-//       duration: 0.5,
-//       scale: 1,
-//       ease: 'power2.out',
-//     });
-//   }
-// }
+buttonPlay.addEventListener('click', startGame);
 
 export function handleSelectCard() {
   const imgElement = this.children[0];
   if (imgElement.src.includes('back')) {
-    if (!cardOneSelected) {
-      cardOneSelected = this;
-      revealCard(cardOneSelected);
-    } else if (!cardTwoSelected && this !== cardOneSelected) {
-      cardTwoSelected = this;
-      revealCard(cardTwoSelected);
-      setTimeout(checkWin, 1000);
+    selectAudio.play();
+
+    if (
+      !cardOneSelected ||
+      !cardTwoSelected ||
+      (cardOneSelected &&
+        cardTwoSelected &&
+        cardOneSelected.style.display === 'none' &&
+        cardTwoSelected.style.display === 'none')
+    ) {
+      if (!cardOneSelected) {
+        cardOneSelected = this;
+
+        revealCard(cardOneSelected);
+      } else if (!cardTwoSelected && this !== cardOneSelected) {
+        cardTwoSelected = this;
+
+        revealCard(cardTwoSelected);
+
+        setTimeout(checkWin, 1000);
+      }
     }
-
-    // gsap.to(cardOneSelected, {
-    //   // rotationY: 180,
-    //   duration: 0.5,
-    //   scaleX: 0,
-    //   ease: 'power2.out',
-    //   onComplete: () => {
-    //     revealCard(cardTwoSelected);
-    //     setTimeout(checkWin, 800);
-    //   },
-    // });
-
-    // gsap.to(cardTwoSelected, {
-    //   rotationY: 180,
-    //   duration: 0.5,
-    //   scaleX: 0,
-    //   ease: 'power2.out',
-    // });
   }
 }
+
 export function revealCard(card) {
   console.log('work');
   const coords = card.id.split('-');
@@ -123,64 +107,16 @@ export function revealCard(card) {
   const r = parseInt(coords[0]);
   const c = parseInt(coords[1]);
   console.log(imgElement);
-  // imgElement.src = getSrc(cardSet[r * COLUMNS + c]);
 
   gsap.to(card, {
     scaleX: 0,
     duration: 0.2,
     onComplete: () => {
-      // card.element.style.backgroundColor = 'red';
       imgElement.src = getSrc(cardSet[r * COLUMNS + c]);
     },
   });
   gsap.to(card, { scaleX: 1, duration: 0.2, delay: 0.2 });
 }
-
-export function getSrc(cardImg) {
-  return `./assets/${cardImg}.jpg`;
-}
-
-// export function checkWin() {
-//   const coordsOne = cardOneSelected.id.split('-');
-//   const coordsTwo = cardTwoSelected.id.split('-');
-//   const r1 = parseInt(coordsOne[0]);
-//   const c1 = parseInt(coordsOne[1]);
-//   const r2 = parseInt(coordsTwo[0]);
-//   const c2 = parseInt(coordsTwo[1]);
-
-//   console.log(r1, c1);
-//   console.log(r2, c2);
-
-//   if (
-//     cardSet[r1 * COLUMNS + c1] === cardSet[r2 * COLUMNS + c2] &&
-//     cardOneSelected.id !== cardTwoSelected.id
-//   ) {
-//     coin += 1000;
-//     matchPairs++;
-//     cardOneSelected.style.visibility = 'hidden';
-//     cardTwoSelected.style.visibility = 'hidden';
-//   } else {
-//     coin -= 500;
-//     cardOneSelected.children[0].src = getSrc('back');
-//     cardTwoSelected.children[0].src = getSrc('back');
-//   }
-//   console.log(coin);
-//   if (coin < 0) {
-//     cards.forEach(card =>
-//       card.element.removeEventListener('click', handleSelectCard)
-//     );
-//     alert('Game Over! You ran out of coins.');
-//   }
-
-//   if (matchPairs === 10) {
-//     card.element.removeEventListener('click', handleSelectCard);
-//     alert('Congratulations! You won!');
-//   }
-
-//   cardOneSelected = null;
-//   cardTwoSelected = null;
-//   updateCoinCount();
-// }
 
 export function checkWin() {
   const coordsOne = cardOneSelected.id.split('-');
@@ -197,49 +133,26 @@ export function checkWin() {
     coin += 1000;
     matchPairs++;
 
-    const tl = gsap.timeline();
+    cardOneSelected.style.display = 'none';
+    cardTwoSelected.style.display = 'none';
 
-    // Di chuyển và phóng to hai lá bài ra giữa màn hình
-    tl.to([cardOneSelected, cardTwoSelected], {
-      scale: 1.5,
-      // x: 200, // Điều chỉnh vị trí theo chiều ngang
-      // y: 200, // Điều chỉnh vị trí theo chiều dọc
-      duration: 1,
-      ease: 'power2.out',
-    });
-
-    // Sau 1 giây, ẩn các lá bài
-    tl.to([cardOneSelected, cardTwoSelected], {
-      opacity: 0,
-      duration: 0.5,
-      delay: 1, // Khoảng thời gian trước khi biến mất,
-      // ease: 'power2.out',
-      ease: 'back.out',
-      onComplete: () => {
-        cardOneSelected.style.display = 'none';
-        cardTwoSelected.style.display = 'none';
-      },
-    });
     updateCoinCount();
   } else {
     coin -= 500;
     cardOneSelected.children[0].src = getSrc('back');
     cardTwoSelected.children[0].src = getSrc('back');
-    updateCoinCount(); // Gọi hàm cập nhật điểm số
+    updateCoinCount();
   }
 
   if (coin < 0) {
-    cards.forEach(card =>
-      card.element.removeEventListener('click', handleSelectCard)
-    );
     alert('Game Over! You ran out of coins.');
+    removeBoardElement();
+    resetGame();
   }
 
   if (matchPairs === 10) {
-    cards.forEach(card =>
-      card.element.removeEventListener('click', handleSelectCard)
-    );
     alert('Congratulations! You won!');
+    resetGame();
   }
 
   cardOneSelected = null;
@@ -248,4 +161,12 @@ export function checkWin() {
 
 export function updateCoinCount() {
   coinEl.element.textContent = `Coins: ${formatCoin(coin)}`;
+}
+
+function resetGame() {
+  window.location.reload();
+}
+
+export function getSrc(cardImg) {
+  return `./assets/${cardImg}.jpg`;
 }
