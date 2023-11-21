@@ -12,15 +12,10 @@ export class Card extends Node {
 
     this._sprite = new Sprite('back');
     this.addChild(this._sprite);
-
-    // this._cover = new Sprite('back');
-    // this.addChild(this._cover);
-
     this._active = true;
 
     this._sprite.element.style.height = Card.HEIGHT;
     this._sprite.element.style.width = Card.WIDTH;
-    // this._sprite.element.id = `card-${id}`;
   }
 
   get active() {

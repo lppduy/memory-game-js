@@ -1,10 +1,5 @@
 import { Label } from './engine/Label.js';
-import {
-  createBoard,
-  formatCoin,
-  shuffleCards,
-  removeBoardElement,
-} from './utils.js';
+import { createBoard, formatCoin, removeBoardElement } from './utils.js';
 const cardList = [
   'darkness',
   'double',
@@ -19,20 +14,14 @@ const cardList = [
 ];
 
 let coin = 10_000;
-// let coin = 0;
 let matchPairs = 0;
 const ROWS = 4;
 const COLUMNS = 5;
 let cardOneSelected;
 let cardTwoSelected;
 
-const backgroundAudio = new Audio('./assets/bg-music.mp3');
-const matchSound = new Audio('./assets/match.mp3');
-const selectAudio = new Audio('./assets/select.mp3');
-
-// const cardSet = shuffleCards(cardList);
+// const cardSet = shuffleCards(cardList); // use to shuffle cards
 const cardSet = [...cardList, ...cardList];
-console.log(cardSet);
 
 const coinEl = new Label(`Coins: ${formatCoin(coin)}`);
 const containerElm = document.querySelector('.container');
@@ -56,15 +45,10 @@ containerElm.appendChild(buttonPlay);
 displayElm.append(coinEl.element);
 
 function startGame() {
-  matchSound.play();
-  backgroundAudio.play();
-  // buttonPlay.removeEventListener('click', startGame);
   buttonPlay.style.display = 'none';
   const { boardElement, cards } = createBoard(ROWS, COLUMNS, cardSet);
 
-  cards.forEach(card =>
-    card.element.addEventListener('click', handleSelectCard)
-  );
+  cards.forEach(card => card.element.addEventListener('click', handleSelectCard));
   containerElm.appendChild(boardElement);
 }
 
@@ -73,8 +57,6 @@ buttonPlay.addEventListener('click', startGame);
 export function handleSelectCard() {
   const imgElement = this.children[0];
   if (imgElement.src.includes('back')) {
-    selectAudio.play();
-
     if (
       !cardOneSelected ||
       !cardTwoSelected ||
@@ -99,14 +81,10 @@ export function handleSelectCard() {
 }
 
 export function revealCard(card) {
-  console.log('work');
   const coords = card.id.split('-');
-  console.log(coords);
   const imgElement = card.children[0];
-  console.log(coords);
   const r = parseInt(coords[0]);
   const c = parseInt(coords[1]);
-  console.log(imgElement);
 
   gsap.to(card, {
     scaleX: 0,

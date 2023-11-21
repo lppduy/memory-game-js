@@ -1,5 +1,4 @@
 import { Card } from './Card.js';
-// import { animateCardsIntoPosition } from './animation.js';
 
 let currentBoardElement;
 
