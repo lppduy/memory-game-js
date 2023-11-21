@@ -39,10 +39,10 @@ export function createBoard(rows, columns, cardSet) {
       const timeline = gsap.timeline();
 
       timeline.set(card, { x: 200, y: 200 }).to(card, {
-        opacity: 1,
+        // opacity: 1,
         x: offsetX,
         y: offsetY,
-        delay: 0.1 * index,
+        delay: 0.15 * index,
         onStart: () => {
           card.element.style.zIndex = 'auto';
         },
