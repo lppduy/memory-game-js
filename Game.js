@@ -21,37 +21,16 @@ export class Game {
       'psychic',
       'water',
     ];
-
     // this.cardSet = this.shuffleCards(this.cardList);
     this.cardSet = [...this.cardList, ...this.cardList]; // easier to test, no shuffle
-
     this.coinEl = new Label(`Coins: ${this.formatCoin(this.coin)}`);
     this.containerElm = document.querySelector('.container');
     this.displayElm = document.querySelector('.display');
-
-    this.buttonPlay = document.createElement('div');
-    this.buttonPlay.textContent = 'Start Game';
-    this.buttonPlay.textContent = 'Start Game';
-    this.buttonPlay.style.position = 'relative';
-    this.buttonPlay.style.fontSize = '50px';
-    this.buttonPlay.style.padding = '20px';
-    this.buttonPlay.style.top = '200px';
-    this.buttonPlay.style.left = '40px';
-    this.buttonPlay.style.cursor = 'pointer';
-    this.buttonPlay.style.backgroundColor = 'black';
-    this.buttonPlay.style.borderRadius = '10px';
-    this.buttonPlay.style.color = 'white';
-    this.buttonPlay.style.fontFamily = 'Montserrat, sans-serif';
-
-    this.containerElm.appendChild(this.buttonPlay);
     this.displayElm.append(this.coinEl.element);
-
-    this.buttonPlay.addEventListener('click', this.startGame.bind(this));
     this.currentBoardElement = null;
   }
 
   startGame() {
-    this.buttonPlay.style.display = 'none';
     const { boardElement, cards } = this.createBoard(this.ROWS, this.COLUMNS, this.cardSet);
 
     cards.forEach(card => card.element.addEventListener('click', this.handleSelectCard.bind(this)));
@@ -59,7 +38,6 @@ export class Game {
   }
 
   handleSelectCard(event) {
-    console.log('handle', event.target);
     const cardElement = event.target.parentNode;
     const imgElement = event.target;
     if (imgElement && imgElement.src.includes('back')) {
@@ -87,33 +65,32 @@ export class Game {
   }
 
   revealCard(cardElement) {
-    console.log('reveal', cardElement);
     const coords = cardElement.id.split('-');
     const imgElement = cardElement.children[0];
-    console.log('imgElement', imgElement);
     const r = parseInt(coords[0]);
     const c = parseInt(coords[1]);
 
     gsap.to(cardElement, {
       scaleX: 0,
       duration: 0.3,
-      onComplete: () => {
+    });
+    gsap.to(cardElement, {
+      scaleX: 1,
+      duration: 0.3,
+      delay: 0.3,
+      onStart: () => {
         imgElement.src = this.getSrc(this.cardSet[r * this.COLUMNS + c]);
       },
     });
-    gsap.to(cardElement, { scaleX: 1, duration: 0.3, delay: 0.3 });
   }
 
   checkWin() {
-    console.log(this.cardOneSelected);
-    console.log(this.cardTwoSelected);
     const coordsOne = this.cardOneSelected.id.split('-');
     const coordsTwo = this.cardTwoSelected.id.split('-');
     const r1 = parseInt(coordsOne[0]);
     const c1 = parseInt(coordsOne[1]);
     const r2 = parseInt(coordsTwo[0]);
     const c2 = parseInt(coordsTwo[1]);
-
     if (
       this.cardSet[r1 * this.COLUMNS + c1] === this.cardSet[r2 * this.COLUMNS + c2] &&
       this.cardOneSelected.id !== this.cardTwoSelected.id
@@ -121,13 +98,14 @@ export class Game {
       this.coin += 1000;
       this.matchPairs++;
 
-      this.revealAndHideCards(this.cardOneSelected, this.cardTwoSelected);
+      this.fadeCardsAnimation(this.cardOneSelected, this.cardTwoSelected);
 
       this.updateCoinCount();
     } else {
       this.coin -= 500;
-      this.cardOneSelected.children[0].src = this.getSrc('back');
-      this.cardTwoSelected.children[0].src = this.getSrc('back');
+
+      this.hideCardsAnimation(this.cardOneSelected, this.cardTwoSelected);
+
       this.updateCoinCount();
     }
 
@@ -226,7 +204,7 @@ export class Game {
 
     return cardSet;
   }
-  revealAndHideCards(card1, card2) {
+  fadeCardsAnimation(card1, card2) {
     gsap.to(card1, {
       scaleX: 1.2,
       scaleY: 1.2,
@@ -259,5 +237,24 @@ export class Game {
         });
       },
     });
+  }
+
+  hideCardsAnimation(cardElement1, cardElement2) {
+    const timeline = gsap.timeline();
+
+    timeline
+      .to([cardElement1, cardElement2], {
+        scaleX: 0,
+        duration: 0.3,
+      })
+      .to([cardElement1, cardElement2], {
+        scaleX: 1,
+        duration: 0.3,
+        delay: 0.3,
+        onStart: () => {
+          cardElement1.children[0].src = this.getSrc('back');
+          cardElement2.children[0].src = this.getSrc('back');
+        },
+      });
   }
 }
