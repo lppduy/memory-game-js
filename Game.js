@@ -121,8 +121,7 @@ export class Game {
       this.coin += 1000;
       this.matchPairs++;
 
-      this.cardOneSelected.style.display = 'none';
-      this.cardTwoSelected.style.display = 'none';
+      this.revealAndHideCards(this.cardOneSelected, this.cardTwoSelected);
 
       this.updateCoinCount();
     } else {
@@ -227,5 +226,39 @@ export class Game {
     }
 
     return cardSet;
+  }
+  revealAndHideCards(card1, card2) {
+    gsap.to(card1, {
+      scaleX: 1.2,
+      scaleY: 1.2,
+      duration: 0.3,
+      onComplete: () => {
+        gsap.to(card1, {
+          scaleX: 0,
+          scaleY: 0,
+          duration: 0.3,
+          delay: 0.5,
+          onComplete: () => {
+            card1.style.display = 'none';
+          },
+        });
+      },
+    });
+    gsap.to(card2, {
+      scaleX: 1.2,
+      scaleY: 1.2,
+      duration: 0.3,
+      onComplete: () => {
+        gsap.to(card2, {
+          scaleX: 0,
+          scaleY: 0,
+          duration: 0.3,
+          delay: 0.5,
+          onComplete: () => {
+            card2.style.display = 'none';
+          },
+        });
+      },
+    });
   }
 }
