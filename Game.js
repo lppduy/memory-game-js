@@ -23,7 +23,7 @@ export class Game {
     ];
 
     // this.cardSet = this.shuffleCards(this.cardList);
-    this.cardSet = [...this.cardList, ...this.cardList];
+    this.cardSet = [...this.cardList, ...this.cardList]; // easier to test, no shuffle
 
     this.coinEl = new Label(`Coins: ${this.formatCoin(this.coin)}`);
     this.containerElm = document.querySelector('.container');
@@ -133,7 +133,6 @@ export class Game {
 
     if (this.coin < 0) {
       alert('Game Over! You ran out of coins.');
-      this.removeBoardElement();
       this.resetGame();
     }
 
