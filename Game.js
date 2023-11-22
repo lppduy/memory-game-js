@@ -70,11 +70,13 @@ export class Game {
     const r = parseInt(coords[0]);
     const c = parseInt(coords[1]);
 
+    const imageUrl = this.getSrc(this.cardSet[r * this.COLUMNS + c]);
+
     gsap.to(cardElement, {
       scaleX: 0,
       duration: 0.3,
       onComplete: () => {
-        imgElement.src = this.getSrc(this.cardSet[r * this.COLUMNS + c]);
+        imgElement.src = imageUrl;
       },
     });
     gsap.to(cardElement, {
