@@ -74,15 +74,15 @@ export class Game {
 
     gsap.to(cardElement, {
       scaleX: 0,
-      duration: 0.3,
+      duration: 0.5,
+      onComplete: () => {
+        imgElement.src = imageUrl;
+      },
     });
     gsap.to(cardElement, {
       scaleX: 1,
-      duration: 0.3,
-      delay: 0.3,
-      onStart: () => {
-        imgElement.src = imageUrl;
-      },
+      duration: 0.5,
+      delay: 0.5,
     });
   }
 
@@ -210,12 +210,12 @@ export class Game {
     gsap.to(card1, {
       scaleX: 1.2,
       scaleY: 1.2,
-      duration: 0.3,
+      duration: 0.4,
       onComplete: () => {
         gsap.to(card1, {
           scaleX: 0,
           scaleY: 0,
-          duration: 0.3,
+          duration: 0.4,
           delay: 0.5,
           onComplete: () => {
             card1.style.display = 'none';
@@ -226,12 +226,12 @@ export class Game {
     gsap.to(card2, {
       scaleX: 1.2,
       scaleY: 1.2,
-      duration: 0.3,
+      duration: 0.4,
       onComplete: () => {
         gsap.to(card2, {
           scaleX: 0,
           scaleY: 0,
-          duration: 0.3,
+          duration: 0.4,
           delay: 0.5,
           onComplete: () => {
             card2.style.display = 'none';
@@ -247,12 +247,12 @@ export class Game {
     timeline
       .to([cardElement1, cardElement2], {
         scaleX: 0,
-        duration: 0.3,
+        duration: 0.5,
       })
       .to([cardElement1, cardElement2], {
         scaleX: 1,
-        duration: 0.3,
-        delay: 0.3,
+        duration: 0.5,
+        delay: 0.5,
         onStart: () => {
           cardElement1.children[0].src = this.getSrc('back');
           cardElement2.children[0].src = this.getSrc('back');
