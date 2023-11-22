@@ -73,10 +73,9 @@ export class Game {
     gsap.to(cardElement, {
       scaleX: 0,
       duration: 0.3,
-      onStart: () => {
+      onComplete: () => {
         imgElement.src = this.getSrc(this.cardSet[r * this.COLUMNS + c]);
       },
-      delay: 0.3,
     });
     gsap.to(cardElement, {
       scaleX: 1,
