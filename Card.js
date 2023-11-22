@@ -9,11 +9,9 @@ export class Card extends Node {
     super();
     this.id = id;
     this.imageSrc = imageSrc;
-
     this._sprite = new Sprite('back');
     this.addChild(this._sprite);
     this._active = true;
-
     this._sprite.element.style.height = Card.HEIGHT;
     this._sprite.element.style.width = Card.WIDTH;
   }
