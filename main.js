@@ -1,6 +1,6 @@
 import { Game } from './Game.js';
 
-window.onload = function () {
+window.addEventListener('load', function () {
   const game = new Game();
   game.startGame();
-};
+});
