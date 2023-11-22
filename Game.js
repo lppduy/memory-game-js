@@ -81,9 +81,6 @@ export class Game {
       scaleX: 1,
       duration: 0.3,
       delay: 0.3,
-      // onStart: () => {
-      //   imgElement.src = this.getSrc(this.cardSet[r * this.COLUMNS + c]);
-      // },
     });
   }
 
