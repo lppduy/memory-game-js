@@ -7,6 +7,7 @@ export class Game {
     this.matchPairs = 0;
     this.ROWS = 4;
     this.COLUMNS = 5;
+    this.canClick = true;
     this.cardOneSelected = null;
     this.cardTwoSelected = null;
     this.cardList = [
@@ -42,11 +43,15 @@ export class Game {
     );
     this.containerElm.appendChild(boardElement);
   }
-
   handleSelectCard(event) {
     const cardElement = event.target.parentNode;
     const imgElement = event.target;
-    if (imgElement && imgElement.src.includes('back')) {
+
+    if (!this.cardOneSelected && !this.cardTwoSelected) {
+      this.canClick = true;
+    }
+
+    if (this.canClick && imgElement && imgElement.src.includes('back')) {
       if (
         !this.cardOneSelected ||
         !this.cardTwoSelected ||
@@ -57,14 +62,12 @@ export class Game {
       ) {
         if (!this.cardOneSelected) {
           this.cardOneSelected = cardElement;
-
           this.revealCard(this.cardOneSelected);
         } else if (!this.cardTwoSelected && this !== this.cardOneSelected) {
           this.cardTwoSelected = cardElement;
-
           this.revealCard(this.cardTwoSelected);
-
-          setTimeout(this.checkWin.bind(this), 1000);
+          this.canClick = false;
+          setTimeout(this.checkWin.bind(this), 1500);
         }
       }
     }
@@ -76,19 +79,17 @@ export class Game {
     const r = parseInt(coords[0]);
     const c = parseInt(coords[1]);
 
-    const imageUrl = this.getSrc(this.cardSet[r * this.COLUMNS + c]);
-
     gsap.to(cardElement, {
       scaleX: 0,
-      duration: 0.35,
-      onComplete: () => {
-        imgElement.src = imageUrl;
-      },
+      duration: 0.3,
     });
     gsap.to(cardElement, {
       scaleX: 1,
-      duration: 0.35,
-      delay: 0.35,
+      duration: 0.3,
+      delay: 0.3,
+      onStart: () => {
+        imgElement.src = this.getSrc(this.cardSet[r * this.COLUMNS + c]);
+      },
     });
   }
 
@@ -114,7 +115,6 @@ export class Game {
       this.coin -= 500;
 
       this.hideCardsAnimation(this.cardOneSelected, this.cardTwoSelected);
-
       this.updateCoinCount();
     }
 
@@ -213,43 +213,53 @@ export class Game {
 
     return cardSet;
   }
+
   fadeCardsAnimation(card1, card2) {
     gsap.to(card1, {
-      scaleX: 1.1,
-      scaleY: 1.1,
-      duration: 0.4,
-      delay: 0.2,
+      scaleX: 1.2,
+      scaleY: 1.2,
+      duration: 0.3,
       onComplete: () => {
         gsap.to(card1, {
           scaleX: 0,
           scaleY: 0,
-          duration: 0.5,
+          duration: 0.3,
           delay: 0.5,
           opacity: 0,
           onComplete: () => {
             card1.style.display = 'none';
+            this.checkFadeComplete();
           },
         });
       },
     });
     gsap.to(card2, {
-      scaleX: 1.1,
-      scaleY: 1.1,
-      duration: 0.4,
-      delay: 0.2,
+      scaleX: 1.2,
+      scaleY: 1.2,
+      duration: 0.3,
       onComplete: () => {
         gsap.to(card2, {
           scaleX: 0,
           scaleY: 0,
-          duration: 0.5,
+          duration: 0.3,
           delay: 0.5,
           opacity: 0,
           onComplete: () => {
             card2.style.display = 'none';
+            this.checkFadeComplete();
           },
         });
       },
     });
+  }
+
+  checkFadeComplete() {
+    const allCardsFaded = [...document.querySelectorAll('.card')].every(
+      card => card.style.display === 'none'
+    );
+    if (allCardsFaded) {
+      this.canClick = true;
+    }
   }
 
   hideCardsAnimation(cardElement1, cardElement2) {
@@ -258,13 +268,12 @@ export class Game {
     timeline
       .to([cardElement1, cardElement2], {
         scaleX: 0,
-        duration: 0.35,
-        delay: 0.35,
+        duration: 0.3,
       })
       .to([cardElement1, cardElement2], {
         scaleX: 1,
-        duration: 0.35,
-        delay: 0.35,
+        duration: 0.3,
+        delay: 0.3,
         onStart: () => {
           cardElement1.children[0].src = this.getSrc('back');
           cardElement2.children[0].src = this.getSrc('back');
