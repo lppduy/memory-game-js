@@ -67,7 +67,7 @@ export class Game {
           this.cardTwoSelected = cardElement;
           this.revealCard(this.cardTwoSelected);
           this.canClick = false;
-          setTimeout(this.checkWin.bind(this), 1500);
+          setTimeout(this.checkWin.bind(this), 1200);
         }
       }
     }
