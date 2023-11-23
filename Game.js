@@ -31,9 +31,15 @@ export class Game {
   }
 
   startGame() {
-    const { boardElement, cards } = this.createBoard(this.ROWS, this.COLUMNS, this.cardSet);
+    const { boardElement, cards } = this.createBoard(
+      this.ROWS,
+      this.COLUMNS,
+      this.cardSet
+    );
 
-    cards.forEach(card => card.element.addEventListener('click', this.handleSelectCard.bind(this)));
+    cards.forEach(card =>
+      card.element.addEventListener('click', this.handleSelectCard.bind(this))
+    );
     this.containerElm.appendChild(boardElement);
   }
 
@@ -74,15 +80,15 @@ export class Game {
 
     gsap.to(cardElement, {
       scaleX: 0,
-      duration: 0.6,
+      duration: 0.35,
       onComplete: () => {
         imgElement.src = imageUrl;
       },
     });
     gsap.to(cardElement, {
       scaleX: 1,
-      duration: 0.6,
-      delay: 0.6,
+      duration: 0.35,
+      delay: 0.35,
     });
   }
 
@@ -94,7 +100,8 @@ export class Game {
     const r2 = parseInt(coordsTwo[0]);
     const c2 = parseInt(coordsTwo[1]);
     if (
-      this.cardSet[r1 * this.COLUMNS + c1] === this.cardSet[r2 * this.COLUMNS + c2] &&
+      this.cardSet[r1 * this.COLUMNS + c1] ===
+        this.cardSet[r2 * this.COLUMNS + c2] &&
       this.cardOneSelected.id !== this.cardTwoSelected.id
     ) {
       this.coin += 1000;
@@ -208,15 +215,17 @@ export class Game {
   }
   fadeCardsAnimation(card1, card2) {
     gsap.to(card1, {
-      scaleX: 1.2,
-      scaleY: 1.2,
-      duration: 0.6,
+      scaleX: 1.1,
+      scaleY: 1.1,
+      duration: 0.4,
+      delay: 0.2,
       onComplete: () => {
         gsap.to(card1, {
           scaleX: 0,
           scaleY: 0,
-          duration: 0.6,
-          delay: 0.6,
+          duration: 0.5,
+          delay: 0.5,
+          opacity: 0,
           onComplete: () => {
             card1.style.display = 'none';
           },
@@ -224,15 +233,17 @@ export class Game {
       },
     });
     gsap.to(card2, {
-      scaleX: 1.2,
-      scaleY: 1.2,
-      duration: 0.6,
+      scaleX: 1.1,
+      scaleY: 1.1,
+      duration: 0.4,
+      delay: 0.2,
       onComplete: () => {
         gsap.to(card2, {
           scaleX: 0,
           scaleY: 0,
-          duration: 0.6,
-          delay: 0.6,
+          duration: 0.5,
+          delay: 0.5,
+          opacity: 0,
           onComplete: () => {
             card2.style.display = 'none';
           },
